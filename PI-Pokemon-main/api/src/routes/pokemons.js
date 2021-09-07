@@ -5,96 +5,86 @@ const router = Router();
 
 
 router.get("/", async(req, res)=>{ 
-   
-  const name = req.query.name
-  if(name){
-    try{
-   const api = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`) 
-   if(api){
-   const aux ={
-       Id:api.data.id, 
-       Pokemon:api.data.name,
-       Types:api.data.types.map(e=>e.type.name),    
-       Hp: api.data.stats[0].base_stat,
-       Attack: api.data.stats[1].base_stat,
-       Defense: api.data.stats[2].base_stat,
-       Speed: api.data.stats[5].base_stat,
-       Weight: api.data.weight,
-       Height: api.data.height,
-       Imagen: api.data.sprites.other.dream_world.front_default
-   }
-   return res.send(aux)
-   }else if(api.data === "Not Found"){
-   var PokemonNameBd= await Pokemon.findOne({ where:{nombre: name}, include: Types});
-    if(PokemonNameBd) {
-      return res.status(200).send(PokemonNameBd)
+  try{
+    const {name} = req.query
+    if(name){
+      const bdBuscar = await Pokemon.findOne({where:{nombre:name}})
+      if(bdBuscar){
+        return res.json(bdBuscar)
+      }else{
+        const apiBuscar = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
+        const aux ={
+          Id:apiBuscar.data.id, 
+          Pokemon:apiBuscar.data.name,
+          Types:apiBuscar.data.types.map(e=>e.type.name),    
+          Hp: apiBuscar.data.stats[0].base_stat,
+          Attack: apiBuscar.data.stats[1].base_stat,
+          Defense: apiBuscar.data.stats[2].base_stat,
+          Speed: apiBuscar.data.stats[5].base_stat,
+          Weight: apiBuscar.data.weight,
+          Height: apiBuscar.data.height,
+          Imagen: apiBuscar.data.sprites.other.dream_world.front_default
+      }
+      return res.send(aux)
+
+      }
+  
+     
+    }else{
+    const api = await axios.get('https://pokeapi.co/api/v2/pokemon')
+    const apiNext = await axios.get(api.data.next)
+    const apiTodos = api.data.results.concat(apiNext.data.results)
+    const response = await Promise.all(apiTodos.map(async pokemon =>{
+    let URL = await axios.get(pokemon.url)
+    let type = URL.data.types.map(el => el.type.name)
+      return {
+        name: URL.data.name,
+        image: URL.data.sprites.other.dream_world.front_default ,
+        types: type
+      }
+  }))
+
+   const bD = await Pokemon.findAll({include: [{
+    model: Types,
+    through: {
+      attributes: [],
+    },
+  }]})
+
+   const todes = bD.concat(response)
+    return res.json(todes)
     }
-  }
-}catch(err){
-       console.log(err)
-    }
-   }
-    
- 
-
-const pokemonApi = await axios.get("https://pokeapi.co/api/v2/pokemon")
-  const pokemonApiNext = await axios.get(pokemonApi.data.next)
-  const totalPokemon = pokemonApi.data.results.concat(pokemonApiNext.data.results)
-  const response = await Promise.all(totalPokemon.map(async pokemon =>{
-     let URL = await axios.get(pokemon.url)
-     let type = URL.data.types.map(el => el.type.name)
-       return {
-         name: URL.data.name,
-         image: URL.data.sprites.other.dream_world.front_default ,
-         types: type
-   } 
- }))
-
-
-const Bd = await Pokemon.findAll({
-     include: Types
- })
-
-const pokeBd = Bd.map(e =>{
-    return{
-        name: e.nombre,
-        image: e.imagen,
-        types: [Types]
-    }
-  })
- console.log(pokeBd)
-  const final = response.concat(pokeBd)
-  return res.json(final) 
+  }catch(err){
+    return res.json("Pokemon no encontrado")
+ } 
 })
 
 router.get("/:id",async(req, res )=>{
-
+  
   const id =  req.params.id
   try{
  if(id.length > 3){
-   
-     const p = await Pokemon.findOne({
+  
+  const p = await Pokemon.findOne({
        where:{id},
        include: Types
      })
       const todos = {
       id: p.id,
-      name:p.name,
-      hp:p.hp,
-      attack:p.attack,
-      defense:p.defense,
-      speed:p.speed,
-      weight:p.weight,
-      height:p.height,
-      img:p.img,
-      types:p.types.map(e=>e.dataValues.name)
+      name:p.nombre,
+      hp:p.vida,
+      attack:p.fuerza,
+      defense:p.defensa,
+      speed:p.velocidad,
+      weight:p.peso,
+      height:p.altura,
+      img:p.imagen,
+      types:p.types.map(e=>e.dataValues.nombre)
       }
   return res.json(todos)
 
-}
- }catch(err) {
-    res.json(err)
-    }
+}else{
+ 
 
 
  const detalles = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -110,23 +100,36 @@ router.get("/:id",async(req, res )=>{
      peso: detalles.data.weight
  }
  return res.json(idPokemon);
+}
+ }catch(err) {
+    res.json("Pokemon no encontrado")
+  }
+
 })
 
 router.post('/' , async (req, res)=>{
-  const { nombre,imagen,tipo,vida,fuerza,defensa,velocidad,altura,peso } = req.body;
+  const  { nombre,imagen,tipos,vida,fuerza,defensa,velocidad,altura,peso } = req.body;
   try{
-    const newPokemon = await Pokemon.create({
-      nombre,
-      imagen,
-      tipo,
-      vida,
-      fuerza,
-      defensa,
-      velocidad,
-      altura,
-      peso
-    })
-    return res.status(201).json("pokemon creado");
+  const newPokemon = await Pokemon.create({
+    nombre,
+    imagen,
+    vida,
+    fuerza,
+    defensa,
+    velocidad,
+    altura,
+    peso
+  })
+
+    if(tipos && tipos !== ""){
+      const arreglo = tipos.split(",")
+      for(tipo of arreglo){
+       let resTipo = await Types.create({nombre: tipo})
+       console.log(resTipo)
+       await newPokemon.addType(resTipo)
+      }
+    }
+    return res.status(201).json("Pokemon creado");
   }catch(err) {
     res.json(err)
     }
