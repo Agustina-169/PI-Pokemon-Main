@@ -1,25 +1,25 @@
 import React from 'react';
 import { useState , useEffect} from 'react';
 import { useDispatch, useSelector} from 'react-redux';
-import { getPokemons, orderByName,orderByFuerza, filterByTypes} from '../actions';
+import { getPokemons, orderByName,orderByFuerza, filterByTypes,filterCreated,getTipos} from '../actions';
 import {Link} from 'react-router-dom'
 import Card from './Card';
 import Paginado from './Paginado';
 import SearchBar from './SearchBar';
-
-
+import './styles/Home.css';
 
 export default function Home(){
     const dispatch = useDispatch()
     const allPokemons = useSelector((state)=> state.pokemons)
-    const[orden,setOrden] = useState('')
+    const[,setOrden] = useState('')
     const[currentPage, setCurrentPage] = useState(1)
-    const[pokemonsPerPage,setPokemonsPerPage] = useState(12)
+    const[pokemonsPerPage,] = useState(9)
     const indexOfLastPokemons = currentPage * pokemonsPerPage
     const indexOfFistPokemons = indexOfLastPokemons - pokemonsPerPage
-    const currentPokemons = allPokemons.slice(indexOfFistPokemons, indexOfLastPokemons)
-    
+    const currentPokemons = allPokemons?.slice(indexOfFistPokemons, indexOfLastPokemons)
+    console.log(allPokemons)
    
+    const tipos = useSelector((state)=> state.tipos)
     const paginado = (pageNumber) =>{
       setCurrentPage(pageNumber)
     }
@@ -27,12 +27,22 @@ export default function Home(){
     useEffect(()=>{
     dispatch(getPokemons()) 
 }, [dispatch])
-  
+
+ useEffect(()=>{
+     dispatch(getTipos())
+ },[dispatch]);
+
  function handleClick(e){
   e.preventDefault();
   dispatch(getPokemons());
   }
+   function handleFilterCreated(e){
+     dispatch(filterCreated(e.target.value))
+   }
 
+  function handleFilterByTypes(e){
+    dispatch(filterByTypes(e.target.value))
+  }
   function handleSort(e){
     e.preventDefault();
     dispatch(orderByName(e.target.value))
@@ -42,17 +52,16 @@ export default function Home(){
 
   
   function handleOrderByFuerza(e){
-    e.preventDefault(e)
+    e.preventDefault()
+    console.log("s", e.target.value)
     dispatch(orderByFuerza(e.target.value))
     setCurrentPage(1)
     setOrden(`Ordenado ${e.target.value}`)
   }
-  function handleFilterByTypes(e){
-    dispatch(filterByTypes(e.target.value))
-  }
   return(
-    <div>
-    <Link to = '/pokemon'>CREAR POKEMON</Link>
+    <div className='container'>
+      
+    <Link to = '/pokemons'>CREAR POKEMON</Link>
     <h1>Pokemones</h1>
     <button onClick={e=> {handleClick(e)}}>
       volver a cargar todos los pokemones
@@ -65,24 +74,18 @@ export default function Home(){
     </select>
     
     <select onChange={e=>handleFilterByTypes(e)}>
-      <option value='tipos'>Tipos</option>
-      <option value='normal'>Normal</option>
-      <option value='poison'>Poison</option>
-      <option value='fire'>Fire</option>
-      <option value='flying'>Flying</option>
-      <option value='water'>Water</option>
-      <option value='bug'>Bug</option>
-      <option value='electric'>Electric</option>
-      <option value='grass'>Grass</option>
-      <option value='ground'>Ground</option>
-      <option value='fairy'>Fairy</option>
+     <option value="all">Todos</option>
+     {tipos?.map((type)=>
+      <option value={type}>{type}</option>
+       )}
       </select>
      <select onChange={e=>handleOrderByFuerza(e)}> 
        <option value='max'>Mayor fuerza</option>
        <option value='min'>Menor fuerza</option>
        </select>
       
-    <select >
+    <select onChange={e=>handleFilterCreated(e)}>
+      <option value='todos'>Todos</option> 
       <option value='api'>Api</option>
       <option value='created'>Creados</option>
     </select>
@@ -97,9 +100,10 @@ export default function Home(){
 
 {currentPokemons?.map((c)=>{ 
       return(
-        <div>
+        <div className='card'>
           <Link to ={'/home/' + c.id}>
-            <Card name={c.name || c.nombre} image={c.image || c.imagen} types={c.types || c.tipos} attack={c.attack} />
+            <Card name={c.name || c.nombre} image={c.image? c.image: c.imagen} types={c.types || c.tipos}fuerza={c.fuerza}
+            />
           </Link>
         </div>
       );

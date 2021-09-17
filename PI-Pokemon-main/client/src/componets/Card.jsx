@@ -1,13 +1,14 @@
 import React from 'react'
-
-export default function Card({name, image, types,attack}){
+import './styles/Card.css'
+export default function Card({name, image, types,fuerza}){
+    
     return(
-        <div>
-            
-            <h3>{name}</h3>
+        <div className='Card'>
+            <h2>{name}</h2>
             <img src={image} alt= 'img not found' whidt='200px' height='250px' />
-           <h6>{attack}</h6>
-           {types.map(e=> <h5>{e}</h5>)}
+           <h3>{fuerza}</h3>
+           {types?.map(e=> typeof e === "string"? <h3> {e}</h3>:<h3>{e.nombre}</h3> )}
         </div>
     );
+    
 }

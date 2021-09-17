@@ -10,17 +10,21 @@ export default function SearchBar(){
 function handleImputChange(e){
     e.preventDefault()
     setName(e.target.value)
-    setName("")
+
 }
 
 function handleSubmit(e){
     e.preventDefault()
     dispatch(getNamePokemons(name))
+    setName({
+        name: ""
+    })
 }
     return(
         <div>
             <input
             type = "text"
+            value = {name.name}
             placeholder = "Buscar..."
             onChange = {(e)=> handleImputChange(e)}
             />
