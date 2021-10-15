@@ -32,7 +32,12 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
     imagen:{
-      type: DataTypes.STRING
-    }
-  });
+      type: DataTypes.STRING,
+    },
+   bD:{
+     type: DataTypes.BOOLEAN,
+     defaultValue: true,
+   }
+
+  }, {timestamps: false},);
 };

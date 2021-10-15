@@ -6,7 +6,7 @@ module.exports = (sequelize) => {
   sequelize.define('types', {
     nombre: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
   });
 }
