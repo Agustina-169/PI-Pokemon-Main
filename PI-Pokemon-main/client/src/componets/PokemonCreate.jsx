@@ -2,16 +2,16 @@ import React , {useState,useEffect} from "react";
 import { Link, useHistory } from "react-router-dom";
 import {postPokemons,getTipos} from '../actions/index'
 import { useDispatch,useSelector } from "react-redux";
-
+import  './styles/PokemonCreate.css'
 
 function validate(input){
     let errors= {};
-    if(!input.nombre){
-     errors.nombre= "se requiere un nombre";
+    if(!input.nombre){ 
+        errors.nombre=  "se requiere un nombre";
     }else if(!input.imagen){
         errors.imagen = "agregar imagen";
     }else if(!input.vida){
-        errors.vida = "agregar vida";
+        errors.vida = "agregar vida ";
     }else if(!input.fuerza){
         errors.fuerza ="agregar fuerza";
     }else if(!input.velocidad){
@@ -26,7 +26,10 @@ function validate(input){
             errors.defensa ="agregar defensa"
         }
     }
+    
     return errors 
+  
+  
 }
 
 export  function PokemonsCreate(){
@@ -52,7 +55,6 @@ const[input,setInput] = useState({
  })
 
 function handleChange(e){
-    console.log("e",e.target.value)
      setInput({
          ...input,
          [e.target.name]: e.target.value
@@ -80,7 +82,6 @@ function handleDelete(el){
  }
  function handleSubmit(e){
      e.preventDefault();
-     console.log("input2",input)
      dispatch(postPokemons(input))
      alert("pokemon creado con exito!")
      setInput({
@@ -100,14 +101,14 @@ function handleDelete(el){
  
 
  return(
-     <div>
-         <Link to = '/home'><button>Volver</button></Link>
+     <div >
+           <Link to = '/home'><button className='buttonVolver'>Atras </button ></Link>
          <h1>Crea tu pokemon!</h1>
          <form onSubmit={(e)=>handleSubmit(e)}>
             
-             <div>
-                 <label>Nombre</label>
-                 <input
+             <div  >
+                 <label><h3>Nombre</h3></label>
+                 <input className='text'
                  type="text"
                  value={input.nombre}
                  name="nombre"
@@ -119,8 +120,8 @@ function handleDelete(el){
              </div>
             
              <div>
-                 <label>Imagen</label>
-                 <input
+                 <label><h3>Imagen</h3></label>
+                 <input className='text'
                     type= "text"
                     value={input.imagen}
                     name="imagen"
@@ -132,7 +133,7 @@ function handleDelete(el){
              </div>
 
              <div>
-                 <label>Vida</label>
+                 <label><h3>Vida</h3></label>
                  <input
                  type="number"
                  value={input.vida}
@@ -145,7 +146,7 @@ function handleDelete(el){
              </div>
 
              <div>
-                 <label>Fuerza</label>
+                 <label><h3>Fuerza</h3></label>
                  <input
                  type="number"
                  value={input.fuerza}
@@ -159,7 +160,7 @@ function handleDelete(el){
 
 
               <div>
-                 <label>Velocidad</label>
+                 <label><h3>Velocidad</h3></label>
                  <input
                  type="number"
                  value={input.velocidad}
@@ -172,7 +173,7 @@ function handleDelete(el){
              </div>
              
               <div>
-                 <label>Altura</label>
+                 <label><h3>Altura</h3></label>
                  <input
                  type="number"
                  value={input.altura}
@@ -185,7 +186,7 @@ function handleDelete(el){
              </div>
              
               <div>
-                 <label>Peso</label>
+                 <label><h3>Peso</h3></label>
                  <input
                  type="number"
                  value={input.peso}
@@ -197,7 +198,7 @@ function handleDelete(el){
                   )}
              </div>
                 <div>
-                 <label>Defensa</label>
+                 <label><h3>Defensa</h3></label>
                  <input
                  type="number"
                  value={input.defensa}
@@ -210,7 +211,7 @@ function handleDelete(el){
              </div>
               
               
-                <select onChange={(e)=>handleSelect(e)}>
+                <select className='otro'onChange={(e)=>handleSelect(e)}>
                     {tipos?.map((type)=>
                         <option value={type}>{type}</option>
                     )}
@@ -220,7 +221,7 @@ function handleDelete(el){
            
             <ul><li>{input.types.map(el => el + " ,")}</li></ul>
 
-            <button type='submit'>Crear pokemon</button>
+            <button className='buttonVolver' type='submit'>Crear pokemon</button>
 
 
          </form>

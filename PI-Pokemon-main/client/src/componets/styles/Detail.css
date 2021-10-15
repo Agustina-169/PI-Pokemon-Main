@@ -1,0 +1,22 @@
+.detail{
+    width: 330px;
+    height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 2px rgba(168, 114, 33, 0.829);
+    overflow: hidden;
+    margin: 20px;
+    text-align: center;
+    transition: all 0.25s;
+}
+
+.desc{
+    font-family: "lucida handwriting";
+    color:yellow;
+    width: 100%;
+    padding: 5px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    
+    
+    background-color: #00000042;
+}

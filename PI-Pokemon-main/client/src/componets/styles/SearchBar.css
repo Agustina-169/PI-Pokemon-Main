@@ -1,0 +1,24 @@
+.button2{
+    background-color: rgba(15, 13, 0, 0.192);
+    color: rgb(255, 237, 71);
+   
+    width: 80%;
+   
+    font-size: 17px;
+    padding: 10px 24px;
+    
+}
+.button3{
+    transition-duration: 0.4s;
+    color:white;
+    background-color: rgb(0, 0, 0);
+    width: 10%;
+    padding: 10px 24px;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  
+}
+.button3:hover{
+    transition-duration: 0.4s;
+    background-color: #fc352e00; 
+  color: rgb(247, 250, 56)
+}

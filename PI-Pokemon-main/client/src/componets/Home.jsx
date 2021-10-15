@@ -13,11 +13,11 @@ export default function Home(){
     const allPokemons = useSelector((state)=> state.pokemons)
     const[,setOrden] = useState('')
     const[currentPage, setCurrentPage] = useState(1)
-    const[pokemonsPerPage,] = useState(9)
+    const[pokemonsPerPage,] = useState(8)
     const indexOfLastPokemons = currentPage * pokemonsPerPage
     const indexOfFistPokemons = indexOfLastPokemons - pokemonsPerPage
-    const currentPokemons = allPokemons?.slice(indexOfFistPokemons, indexOfLastPokemons)
-    console.log(allPokemons)
+    const currentPokemons = allPokemons && allPokemons.slice(indexOfFistPokemons, indexOfLastPokemons) 
+    
    
     const tipos = useSelector((state)=> state.tipos)
     const paginado = (pageNumber) =>{
@@ -59,44 +59,50 @@ export default function Home(){
     setOrden(`Ordenado ${e.target.value}`)
   }
   return(
-    <div className='container'>
-      
-    <Link to = '/pokemons'>CREAR POKEMON</Link>
-    <h1>Pokemones</h1>
-    <button onClick={e=> {handleClick(e)}}>
-      volver a cargar todos los pokemones
+    <div className='container' >
+     
+      <div>
+    <SearchBar/>
+       <Link to = '/'><button className='buttonVolver'>Inicio</button ></Link>
+    <h1 className='pokemones'>POKEMONES</h1>
+     </div>
+          
+     <button className='buttonVolver' onClick={e=> {handleClick(e)}}>
+        Mostrar los pokemones 
     </button>
-    <div>
    
-    <select onChange={e=>{handleSort(e)}}>
+     <Link to = '/pokemons'><button className='buttonVolver'>Crea tu Pokemon </button ></Link>
+    <div  > 
+
+    <select  className='buttonVolver'onChange={e=>{handleSort(e)}}>
       <option value='asc'>Ascendente</option>
       <option value='desc'>Descendente</option>
     </select>
     
-    <select onChange={e=>handleFilterByTypes(e)}>
+    <select className='buttonVolver' onChange={e=>handleFilterByTypes(e)}>
      <option value="all">Todos</option>
      {tipos?.map((type)=>
       <option value={type}>{type}</option>
        )}
       </select>
-     <select onChange={e=>handleOrderByFuerza(e)}> 
+     <select  className='buttonVolver' onChange={e=>handleOrderByFuerza(e)}> 
        <option value='max'>Mayor fuerza</option>
        <option value='min'>Menor fuerza</option>
        </select>
       
-    <select onChange={e=>handleFilterCreated(e)}>
-      <option value='todos'>Todos</option> 
+    <select className='buttonVolver' onChange={e=>handleFilterCreated(e)}>
+      <option value='all'>Todos</option> 
       <option value='api'>Api</option>
       <option value='created'>Creados</option>
     </select>
 
-   <Paginado
+   <Paginado 
    pokemonsPerPage ={pokemonsPerPage}
    allPokemons= {allPokemons?.length}
    paginado={paginado}
     />
     
-  <SearchBar/>
+  
 
 {currentPokemons?.map((c)=>{ 
       return(

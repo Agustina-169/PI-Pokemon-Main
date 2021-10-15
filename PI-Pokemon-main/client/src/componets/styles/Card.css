@@ -1,8 +1,11 @@
 .Card {
+    color:rgb(255, 251, 40);
+    background-color: rgba(0, 0, 0, 0.507);
     margin: 20px;
     width: 18rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    
 }
